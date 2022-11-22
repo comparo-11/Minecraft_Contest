@@ -104,6 +104,7 @@ def main():
 
         # 検出
         result = detect.run()
+        initTxt()
         mobData = []
         for j in range(len(result)):
             mobData.append(mob())
