@@ -1,1 +1,6 @@
 *.exe
+
+python/
+
+t_creeper.txt
+t_zombie.txt
