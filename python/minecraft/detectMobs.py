@@ -12,8 +12,8 @@ import detect
 # 画面内のmob情報を格納するクラス
 class mob:
     def __init__(self):
-        #type 0:クリーパー, 1:ゾンビ　（嘘ついてるかも）
-        self.type = 0
+        #type 1:クリーパー, 2:ゾンビ　（嘘ついてるかも）
+        self.type = 1
         self.x = 0
         self.y = 0
         self.width = 0
@@ -27,6 +27,7 @@ class mob:
         self.y = float(data[2])
         self.width = float(data[3])
         self.height = float(data[4])
+        self.distance = calcDistance(self.x)
 
     def printData(self):
         print(self.type)
@@ -34,28 +35,31 @@ class mob:
         print(self.y)
         print(self.width)
         print(self.height)
-
-    def calcDistance(self):
-        # 0:近距離 1:中距離 2:遠距離
-        if self.width > 0.1:
-            self.distance = 0
-        elif self.width > 0.05:
-            self.distance = 1
-        else:
-            self.distance = 2
-
+         
     # txtに書き込む
+    # フォーマット：種類(1,2) X Y width height 距離
+    # 種類以外0埋め三桁表示
     def outputDataDetail(self):
+        i_x = (int)(self.x * 1000)
+        i_y = (int)(self.y * 1000)
+        i_width = (int)(self.width * 1000)
+        i_height = (int)(self.height * 1000)
+
         # txtに書き込む内容
-        # txt = " {x:.03f} {y:.03f} {width:.03f} {height:.03f} {distance:1d}".format(x=self.x,y=self.y,width=self.width,height=self.height,distance=self.distance)
-        txt = "{x:03.0f}{y:03.0f}{width:03.0f}{height:03.0f}{distance:03d}".format(x=self.x*1000,y=self.y*1000,width=self.width*1000,height=self.height*1000,distance=self.distance)
+        txt = "{x:03.0f}{y:03.0f}{w:03.0f}{h:03.0f}{dist:03d}".format(x=i_x,y=i_y,w=i_width,h=i_height,dist=self.distance)
 
         writeTxt(txt, self.type)
 
-    # def outputDataAbout(self):
-    #     txt = "{x:.03f}{y:.03f}{width:.03f}{height:.03f}{distance:1d}".format(x=self.x,y=self.y,width=self.width,height=self.height,distance=self.distance)
+    # フォーマット：種類(1,2) X軸位置 Y軸位置 距離
+    # 全て１桁
+    def outputDataAbout(self):
+        x_pos = calcPosition(self.x)
+        y_pos = calcPosition(self.y)
 
-    #def calcPosition(self):
+        # txtに書き込む内容
+        txt = "{x:01d}{y:01d}{dist:01d}".format(x=x_pos,y=y_pos,dist=self.distance)
+
+        writeTxt(txt, self.type)
 
 # スクショ用関数
 def captureMC(winHundle, windowSize):
@@ -66,19 +70,42 @@ def captureMC(winHundle, windowSize):
     else:
         print("error!!")
 
+# 大体の距離を計算
+def calcDistance(width):
+    # 0:近距離 1:中距離 2:遠距離
+    if width > 0.1:
+        distance = 0
+    elif width > 0.05:
+        distance = 1
+    else:
+        distance = 2 
+    
+    return distance
+
+# 大体の位置計算
+def calcPosition(posVal):
+    if posVal < 0.4:
+        position = 0
+    elif posVal < 0.6:
+        position = 1
+    else:
+        position = 2
+
+    return position
+
 # 結果の出力用
 # txt初期化
 def initTxt():
         f = open('t_zombie.txt', 'w', encoding='UTF-8')
-        f.write("0")
+        f.write("1")
         f.close()
         f = open('t_creeper.txt', 'w', encoding='UTF-8')
-        f.write("1")
+        f.write("2")
         f.close()
 
 # txt書き込み
 def writeTxt(line, type):
-    if type == 0:
+    if type == 1:
         txtName = "t_zombie.txt"
     else:
         txtName = "t_creeper.txt"
@@ -109,8 +136,7 @@ def main():
         for j in range(len(result)):
             mobData.append(mob())
             mobData[j].setData(result=result[j])
-            mobData[j].calcDistance()
-            mobData[j].outputDataDetail()
+            mobData[j].outputDataAbout()
 
 if __name__ == '__main__':
     main()

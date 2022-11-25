@@ -415,29 +415,64 @@ int detectZombie2(void){
     return ibuf;
 }
 
-char *detectMobs(char *buf, int mode) {
+char *detectMobsDetail(int mode, char *buf) {
     FILE	*fp;
-    // modeが1ならばゾンビの情報を呼び出す
-    // modeが2ならばクリーパーの情報を呼び出す
+    // modeが1ならばクリーパーの情報を呼び出す
+    // modeが2ならばゾンビの情報を呼び出す
     char	*fname;
     if(mode == 1) {
+	    fname = "t_creeper.txt";
+    }else if(mode == 2) {
 	    fname = "t_zombie.txt";
     }else {
-	    fname = "t_creeper.txt";
+        printf("error:detectMobs\n");
+        printf("Non accepted mode value\n");
+		exit(1);
     }
 
 	if ( (fp=fopen(fname,"r")) == NULL) {
 		printf("error:detectMobs\n");
 		exit(1);
 	}
-    // フォーマット：種類(0,1) X Y width height 距離
-    // 種類以外0埋め三桁表示
 	fgets(buf, 2048, fp);
 	(void) fclose(fp);
 
     return buf;
 }
 
+int *detectMobsAbout(int mode, int *ibuf) {
+    FILE	*fp; 
+    char	*fname;
+    int     i;
+
+    if(mode == 1) {
+	    fname = "t_creeper.txt";
+    }else if(mode == 2){
+	    fname = "t_zombie.txt";
+    }else {
+        printf("error:detectMobs\n");
+        printf("Non accepted mode value\n");
+		exit(1);
+    }
+
+    if ( (fp=fopen(fname,"r")) == NULL) {
+		printf("error:detectMobs\n");
+		exit(1);
+	}
+
+	char buf[256];
+	fgets(buf, 2048, fp);
+	(void) fclose(fp);
+    int bufLength = strlen(buf);
+
+    // ibuf = atoi(buf);
+
+    for(i=0;i<bufLength;i++){
+        ibuf[i] = buf[i] - '0';
+    }
+
+    return ibuf;
+}
 
 void killPython(void){
     int ret1,ret2,ret3;
