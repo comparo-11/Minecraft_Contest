@@ -47,6 +47,7 @@ void killPython(void);
 
 int detectZombie(void);
 int detectZombie2(void);
-char *detectMobsDetail(int mode, char *buf);
+int *detectMobsDetail(int mode, int *ibuf);
 int *detectMobsAbout(int mode, int *ibuf);
+long detectMobsSimple(int mode);
 void exePython(void);

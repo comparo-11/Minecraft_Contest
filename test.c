@@ -5,8 +5,8 @@
 #include "control.h"
 
 int main(int argc, char *argv){
-    char *han;
-    int *ibuf;
+    int ibuf;
+    long cbuf, zbuf;
     /*
     int flag=0;
     init();
@@ -17,8 +17,9 @@ int main(int argc, char *argv){
     exePython();
 
     while(rk){
-        // han = detectMobsDetail(1, han);
-        ibuf = detectMobsAbout(1, ibuf);
+        // detectMobsAbout(1, ibuf);
+        cbuf = detectMobsSimple(1);
+        zbuf = detectMobsSimple(2);
 
         // printf("完了\n");
         // printf("%d\n", strlen(han));
@@ -29,10 +30,11 @@ int main(int argc, char *argv){
         // }
         printf("\n");
         printf("\n");
-        // printf("%d", ibuf);
-        for(int i=0; i < sizeof(ibuf)/4; i++) {
-            printf("%d", ibuf[i] - '0');
-        }
+        printf("%d\n", zbuf);
+        printf("%d\n", cbuf);
+        // for(int i=0; i < sizeof(ibuf)/4; i++) {
+        //     printf("%d", ibuf[i] - '0');
+        // }
         printf("\n");
         sleep(5);
     }

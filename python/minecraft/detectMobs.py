@@ -59,7 +59,19 @@ class mob:
         # txtに書き込む内容
         txt = "{x:01d}{y:01d}{dist:01d}".format(x=x_pos,y=y_pos,dist=self.distance)
 
-        writeTxt(txt, self.type)
+        if(self.type == 1):
+            txtName = "t_zombie.txt"
+        else:
+            txtName = "t_creeper.txt"
+        writeTxt(txt, txtName)
+    
+    #detectZombieみたいにintだけで返せる出力を作りたい
+    # def outputDataSimple(self):
+    #     x_pos = calcPosition(self.x)
+    #     y_pos = calcPosition(self.y)
+        
+    #     txt = ""
+        
 
 # スクショ用関数
 def captureMC(winHundle, windowSize):
@@ -84,15 +96,34 @@ def calcDistance(width):
 
 # 大体の位置計算
 def calcPosition(posVal):
-    if posVal < 0.4:
-        position = 0
-    elif posVal < 0.6:
-        position = 1
-    else:
-        position = 2
+    # if posVal < 0.1:
+    #     position = 0
+    # elif posVal < 0.2:
+    #     position = 1
+    # else:
+    #     position = 2
+        
+    # 画面を大体１０等分して計算
+    for i in range(10):
+        if(i < posVal*10):
+            position = i
 
     return position
 
+def check(simplePos, pos):
+    simplePos[calcPosition(pos)] = "1"
+    
+def makeSimpleTxt(simpleCreeperPos, simpleZombiePos):
+    txtName = "t_simple.txt"
+    line = ""
+    for i in range(10):
+        line = line + simpleCreeperPos[i]
+    line = line + "2"
+    for i in range(10):
+        line = line + simpleZombiePos[i]
+    
+    writeTxt(line, txtName)
+    
 # 結果の出力用
 # txt初期化
 def initTxt():
@@ -102,14 +133,12 @@ def initTxt():
         f = open('t_creeper.txt', 'w', encoding='UTF-8')
         f.write("2")
         f.close()
+        f = open('t_simple.txt', 'w', encoding='UTF-8')
+        f.write("1")
+        f.close()
 
 # txt書き込み
-def writeTxt(line, type):
-    if type == 1:
-        txtName = "t_zombie.txt"
-    else:
-        txtName = "t_creeper.txt"
-
+def writeTxt(line, txtName):
     f = open(txtName, 'a', encoding='UTF-8')
     f.write(line)
     f.close()
@@ -133,10 +162,17 @@ def main():
         result = detect.run()
         initTxt()
         mobData = []
+        simpleZombiePos = ["0"] * 10
+        simpleCreeperPos = ["0"] * 10
         for j in range(len(result)):
             mobData.append(mob())
             mobData[j].setData(result=result[j])
+            if(mobData[j].type == 1):
+                check(simpleCreeperPos, mobData[j].x)
+            else: 
+                check(simpleZombiePos, mobData[j].x)
             mobData[j].outputDataAbout()
+        makeSimpleTxt(simpleZombiePos, simpleCreeperPos)
 
 if __name__ == '__main__':
     main()

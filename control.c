@@ -415,11 +415,13 @@ int detectZombie2(void){
     return ibuf;
 }
 
-char *detectMobsDetail(int mode, char *buf) {
+int *detectMobsDetail(int mode, int *ibuf) {
     FILE	*fp;
     // modeが1ならばクリーパーの情報を呼び出す
     // modeが2ならばゾンビの情報を呼び出す
     char	*fname;
+    int     i;
+
     if(mode == 1) {
 	    fname = "t_creeper.txt";
     }else if(mode == 2) {
@@ -434,10 +436,16 @@ char *detectMobsDetail(int mode, char *buf) {
 		printf("error:detectMobs\n");
 		exit(1);
 	}
-	fgets(buf, 2048, fp);
+    char buf[256];
+	fgets(buf, sizeof(buf), fp);
 	(void) fclose(fp);
+    int bufLength = strlen(buf);
 
-    return buf;
+    for(i=0;i<bufLength;i++){
+        ibuf[i] = buf[i] - '0';
+    }
+
+    return ibuf;
 }
 
 int *detectMobsAbout(int mode, int *ibuf) {
@@ -461,17 +469,45 @@ int *detectMobsAbout(int mode, int *ibuf) {
 	}
 
 	char buf[256];
-	fgets(buf, 2048, fp);
+	fgets(buf, sizeof(buf), fp);
 	(void) fclose(fp);
     int bufLength = strlen(buf);
-
-    // ibuf = atoi(buf);
 
     for(i=0;i<bufLength;i++){
         ibuf[i] = buf[i] - '0';
     }
 
     return ibuf;
+}
+
+long detectMobsSimple(int mode) {
+    FILE	*fp;
+	char	fname[] = "t_simple.txt";
+    int i, t=1;
+    // クリーパーの情報
+    long cbuf=0
+    // ゾンビの情報
+    long zbuf=0;
+
+	if ( (fp=fopen(fname,"r")) ==NULL) {
+		printf("error:detectZombie\n");
+		exit(1);
+	}
+	char buf[256];
+	fgets(buf, sizeof(buf), fp);
+	(void) fclose(fp);
+    
+    for(i=0;i<10;i++){
+        cbuf = cbuf + ((buf[10 - i] - '0') * t);
+        zbuf = zbuf + ((buf[21 - i] - '0') * t);
+        t = t * 10;
+    }
+
+    if(mode == 1){
+        return cbuf;
+    }else {
+        return zbuf;
+    }
 }
 
 void killPython(void){
