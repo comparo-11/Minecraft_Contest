@@ -64,13 +64,6 @@ class mob:
         else:
             txtName = "t_creeper.txt"
         writeTxt(txt, txtName)
-    
-    #detectZombieみたいにintだけで返せる出力を作りたい
-    # def outputDataSimple(self):
-    #     x_pos = calcPosition(self.x)
-    #     y_pos = calcPosition(self.y)
-        
-    #     txt = ""
         
 
 # スクショ用関数

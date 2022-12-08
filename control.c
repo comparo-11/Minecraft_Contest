@@ -415,40 +415,7 @@ int detectZombie2(void){
     return ibuf;
 }
 
-int *detectMobsDetail(int mode, int *ibuf) {
-    FILE	*fp;
-    // modeが1ならばクリーパーの情報を呼び出す
-    // modeが2ならばゾンビの情報を呼び出す
-    char	*fname;
-    int     i;
-
-    if(mode == 1) {
-	    fname = "t_creeper.txt";
-    }else if(mode == 2) {
-	    fname = "t_zombie.txt";
-    }else {
-        printf("error:detectMobs\n");
-        printf("Non accepted mode value\n");
-		exit(1);
-    }
-
-	if ( (fp=fopen(fname,"r")) == NULL) {
-		printf("error:detectMobs\n");
-		exit(1);
-	}
-    char buf[256];
-	fgets(buf, sizeof(buf), fp);
-	(void) fclose(fp);
-    int bufLength = strlen(buf);
-
-    for(i=0;i<bufLength;i++){
-        ibuf[i] = buf[i] - '0';
-    }
-
-    return ibuf;
-}
-
-int *detectMobsAbout(int mode, int *ibuf) {
+int detectMobsDetail(int mode, int ibuf[]) {
     FILE	*fp; 
     char	*fname;
     int     i;
@@ -473,11 +440,51 @@ int *detectMobsAbout(int mode, int *ibuf) {
 	(void) fclose(fp);
     int bufLength = strlen(buf);
 
+    for(i=0; i<256; i++){
+        ibuf[i] = 0;
+    }
+
     for(i=0;i<bufLength;i++){
         ibuf[i] = buf[i] - '0';
     }
 
-    return ibuf;
+    return bufLength;
+}
+
+int detectMobsAbout(int mode, int ibuf[]) {
+    FILE	*fp; 
+    char	*fname;
+    int     i;
+
+    if(mode == 1) {
+	    fname = "t_creeper.txt";
+    }else if(mode == 2){
+	    fname = "t_zombie.txt";
+    }else {
+        printf("error:detectMobs\n");
+        printf("Non accepted mode value\n");
+		exit(1);
+    }
+
+    if ( (fp=fopen(fname,"r")) == NULL) {
+		printf("error:detectMobs\n");
+		exit(1);
+	}
+
+	char buf[256];
+	fgets(buf, sizeof(buf), fp);
+	(void) fclose(fp);
+    int bufLength = strlen(buf);
+
+    for(i=0; i<256; i++){
+        ibuf[i] = 0;
+    }
+
+    for(i=0;i<bufLength;i++){
+        ibuf[i] = buf[i] - '0';
+    }
+
+    return bufLength;
 }
 
 long detectMobsSimple(int mode) {
@@ -485,7 +492,7 @@ long detectMobsSimple(int mode) {
 	char	fname[] = "t_simple.txt";
     int i, t=1;
     // クリーパーの情報
-    long cbuf=0
+    long cbuf=0;
     // ゾンビの情報
     long zbuf=0;
 
